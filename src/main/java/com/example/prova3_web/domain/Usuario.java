@@ -1,10 +1,7 @@
 package com.example.prova3_web.domain;
 
 import com.example.prova3_web.controller.UsuarioController;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +11,13 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -26,16 +29,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE usuario SET deleted_at = CURRENT_TIMESTAMP WHERE id=?")
 @Where(clause = "deleted_at is null")
-public class Usuario extends AbstractEntity{
-
+public class Usuario extends AbstractEntity implements UserDetails {
     private String username;
+    @Column(unique = true)
     private String login;
     private String password;
     private Boolean isAdmin = false;
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Endereco endereco;
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Pedido> pedidos;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<Pedido> pedidos = new ArrayList<>();;
 
     @Override
     public void partialUpdate(AbstractEntity e) {
@@ -44,6 +47,39 @@ public class Usuario extends AbstractEntity{
             this.login = usuario.login;
             this.password = usuario.password;
         }
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return login;
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Data

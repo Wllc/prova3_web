@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/endereco")
+@RequestMapping("/enderecos")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EnderecoController {
     EnderecoService service;
     ModelMapper mapper;
@@ -38,7 +39,7 @@ public class EnderecoController {
                 }).toList();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Endereco.DtoResponse getById(@PathVariable Long id){
 
         Endereco endereco = this.service.getById(id);
@@ -49,7 +50,7 @@ public class EnderecoController {
     }
 
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Endereco.DtoResponse update(@RequestBody Endereco.DtoRequest dtoRequest, @PathVariable Long id){
         Endereco e = Endereco.DtoRequest.convertToEntity(dtoRequest, mapper);
         Endereco.DtoResponse response = Endereco.DtoResponse.convertToDto(this.service.update(e, id), mapper);
@@ -57,7 +58,7 @@ public class EnderecoController {
         return response;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         this.service.delete(id);
     }

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pedido")
+@RequestMapping("/pedidos")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PedidoController {
     PedidoService service;
     ModelMapper mapper;
@@ -38,7 +39,7 @@ public class PedidoController {
                 }).toList();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Pedido.DtoResponse getById(@PathVariable Long id){
 
         Pedido pedido = this.service.getById(id);
@@ -49,7 +50,7 @@ public class PedidoController {
     }
 
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Pedido.DtoResponse update(@RequestBody Pedido.DtoRequest dtoRequest, @PathVariable Long id){
         Pedido p = Pedido.DtoRequest.convertToEntity(dtoRequest, mapper);
         Pedido.DtoResponse response = Pedido.DtoResponse.convertToDto(this.service.update(p, id), mapper);
@@ -57,7 +58,7 @@ public class PedidoController {
         return response;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         this.service.delete(id);
     }

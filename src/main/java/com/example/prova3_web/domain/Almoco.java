@@ -12,19 +12,14 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Almoco extends AbstractEntity{
-
-    @ManyToMany(mappedBy = "almocos", cascade = CascadeType.ALL)
-    private List<Pedido> pedidos = new ArrayList<Pedido>();
     @NotBlank
     private String nomeAlmoco;
     @NotNull
@@ -64,9 +59,11 @@ public class Almoco extends AbstractEntity{
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class DtoResponse extends RepresentationModel<DtoResponse> {
+        Long id;
         String nomeAlmoco;
         String preco;
         String descricao;
+        String tamanho;
 
         public static DtoResponse convertToDto(Almoco almoco, ModelMapper mapper) {
             return mapper.map(almoco, DtoResponse.class);

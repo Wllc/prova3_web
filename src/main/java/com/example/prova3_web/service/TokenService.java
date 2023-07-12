@@ -24,7 +24,7 @@ public class TokenService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("ApiRestDemo")
+                .issuer("prova3_web")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(authentication.getName())

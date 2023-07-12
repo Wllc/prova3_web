@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/almocos")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AlmocoController {
     AlmocoService service;
     ModelMapper mapper;
@@ -38,7 +39,7 @@ public class AlmocoController {
                 return response;
             }).toList();
     }
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Almoco.DtoResponse getById(@PathVariable Long id){
         Almoco a = this.service.getById(id);
         Almoco.DtoResponse response = Almoco.DtoResponse.convertToDto(a, mapper);
@@ -46,7 +47,7 @@ public class AlmocoController {
 
         return response;
     }
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Almoco.DtoResponse update(@RequestBody Almoco.DtoRequest dtoRequest, @PathVariable Long id){
         Almoco a = Almoco.DtoRequest.convertToEntity(dtoRequest, mapper);
         Almoco.DtoResponse response = Almoco.DtoResponse.convertToDto(this.service.update(a, id), mapper);
@@ -54,7 +55,7 @@ public class AlmocoController {
         return response;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         this.service.delete(id);
     }

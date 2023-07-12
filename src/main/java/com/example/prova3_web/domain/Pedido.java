@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
@@ -30,13 +32,13 @@ public class Pedido extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-    @ManyToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "pedido_almoco",
-            joinColumns = @JoinColumn(name = "pedido_id"),
-            inverseJoinColumns = @JoinColumn(name = "almoco_id")
-    )
-    private List<Almoco> almocos;
+            joinColumns = { @JoinColumn(name = "pedido_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "almoco_id")})
+    private List<Almoco> almocos = new ArrayList<Almoco>();;
 
     @Override
     public void partialUpdate(AbstractEntity e) {

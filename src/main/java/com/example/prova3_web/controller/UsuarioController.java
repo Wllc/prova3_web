@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UsuarioController {
     UsuarioService service;
     ModelMapper mapper;
@@ -22,12 +23,12 @@ public class UsuarioController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario.DtoResponse create(@RequestBody Usuario.DtoRequest u) {
-        Usuario usuario = this.service.create(Usuario.DtoRequest.convertToEntity(u, mapper));
-
+        Usuario usuario = Usuario.DtoRequest.convertToEntity(u, mapper);
+        this.service.createUsuario(usuario);
         Usuario.DtoResponse response = Usuario.DtoResponse.convertToDto(usuario, mapper);
         response.generateLinks(usuario.getId());
-
         return response;
+
     }
 
     @GetMapping
@@ -40,7 +41,7 @@ public class UsuarioController {
                 }).toList();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Usuario.DtoResponse getById(@PathVariable Long id){
         Usuario usuario = this.service.getById(id);
         Usuario.DtoResponse response = Usuario.DtoResponse.convertToDto(usuario, mapper);
@@ -49,7 +50,7 @@ public class UsuarioController {
         return response;
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Usuario.DtoResponse update(@RequestBody Usuario.DtoRequest dtoRequest, @PathVariable Long id) {
         Usuario u = Usuario.DtoRequest.convertToEntity(dtoRequest, mapper);
         Usuario.DtoResponse response = Usuario.DtoResponse.convertToDto(this.service.update(u, id), mapper);
@@ -57,7 +58,7 @@ public class UsuarioController {
         return response;
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         this.service.delete(id);
     }

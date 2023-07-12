@@ -1,6 +1,7 @@
 package com.example.prova3_web.service;
 
 import com.example.prova3_web.domain.AbstractEntity;
+import com.example.prova3_web.domain.Usuario;
 import com.example.prova3_web.repository.IGenericRepository;
 import jakarta.persistence.EntityNotFoundException;
 

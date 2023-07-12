@@ -1,4 +1,4 @@
 package com.example.prova3_web.config;
 
-public record LoginDTO(String username, String password) {
+public record LoginDTO(String login, String password) {
 }
