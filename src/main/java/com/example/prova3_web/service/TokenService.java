@@ -26,7 +26,7 @@ public class TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("prova3_web")
                 .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .expiresAt(now.plus(10, ChronoUnit.DAYS))  //tempo de duração do token
                 .subject(authentication.getName())
                 .claim("scope", scope)
                 .build();

@@ -3,14 +3,17 @@ package com.example.prova3_web.controller;
 import com.example.prova3_web.domain.Almoco;
 import com.example.prova3_web.service.AlmocoService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/almocos")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class AlmocoController {
     AlmocoService service;
     ModelMapper mapper;
@@ -30,14 +33,30 @@ public class AlmocoController {
         return response;
     }
 
+//    @GetMapping
+//    public List<Almoco.DtoResponse> list(){
+//        return this.service.list().stream().map(
+//            elementoAtual -> {
+//                Almoco.DtoResponse response = Almoco.DtoResponse.convertToDto(elementoAtual, mapper);
+//                response.generateLinks(elementoAtual.getId());
+//                return response;
+//            }).toList();
+//    }
     @GetMapping
-    public List<Almoco.DtoResponse> list(){
-        return this.service.list().stream().map(
-            elementoAtual -> {
-                Almoco.DtoResponse response = Almoco.DtoResponse.convertToDto(elementoAtual, mapper);
-                response.generateLinks(elementoAtual.getId());
-                return response;
-            }).toList();
+    public ResponseEntity<Page<Almoco.DtoResponse>> find(Pageable page) {
+
+        //System.out.println(page.toString());
+
+        Page<Almoco.DtoResponse> dtoResponses = service
+                .find(page)
+                .map(record -> {
+                    Almoco.DtoResponse response = Almoco.DtoResponse.convertToDto(record, mapper);
+                    response.generateLinks(record.getId());
+                    return response;
+                });
+
+
+        return new ResponseEntity<>(dtoResponses, HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public Almoco.DtoResponse getById(@PathVariable Long id){

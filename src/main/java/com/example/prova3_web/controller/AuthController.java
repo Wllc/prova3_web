@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
-@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final TokenService tokenService;
@@ -30,10 +29,5 @@ public class AuthController {
         return tokenService.generateToken(authentication);
     }
 
-    //Basic Authentication
-//    @PostMapping("/token")
-//    public String token(Authentication authentication) {
-//        return tokenService.generateToken(authentication);
-//    }
 
 }

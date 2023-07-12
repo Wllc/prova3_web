@@ -4,6 +4,8 @@ import com.example.prova3_web.domain.AbstractEntity;
 import com.example.prova3_web.domain.Usuario;
 import com.example.prova3_web.repository.IGenericRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,5 +54,10 @@ public abstract class GenericService<E extends AbstractEntity, R extends IGeneri
     @Override
     public List<E> list() {
         return (List<E>) this.repository.findAll();
+    }
+
+    @Override
+    public Page<E> find(Pageable page) {
+        return (Page<E>) this.repository.findAll(page);
     }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pedidos")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PedidoController {
     PedidoService service;
     ModelMapper mapper;

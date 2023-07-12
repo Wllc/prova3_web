@@ -65,16 +65,6 @@ public class SecurityConfig {
         return new ProviderManager(authProvider);
     }
 
-//    @Bean
-//    public UserDetailsService users() {
-//        return new InMemoryUserDetailsManager(
-//                User.withUsername("wallace")
-//                        .password("{noop}password")
-//                        .authorities("write")
-//                        .build()
-//        );
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -92,29 +82,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder() {
+    JwtDecoder jwtDecoder(){
         return NimbusJwtDecoder.withPublicKey(rsaKeys.publicKey()).build();
     }
 
     @Bean
-    JwtEncoder jwtEncoder() {
+    JwtEncoder jwtEncoder(){
         JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Permitir todas as origens
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH")); // Permitir todos os métodos
-//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Permitir cabeçalhos específicos
-//        configuration.setAllowCredentials(true); // Permitir envio de credenciais (por exemplo, cookies)
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//
-//        return source;
-//    }
+
     @Bean
     PasswordEncoder encoder(){
         return new BCryptPasswordEncoder();

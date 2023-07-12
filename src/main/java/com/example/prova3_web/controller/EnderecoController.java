@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/enderecos")
-@CrossOrigin(origins = "http://localhost:3000")
 public class EnderecoController {
     EnderecoService service;
     ModelMapper mapper;
