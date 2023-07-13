@@ -3,7 +3,10 @@ package com.example.prova3_web.controller;
 import com.example.prova3_web.domain.Pedido;
 import com.example.prova3_web.service.PedidoService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,16 +31,28 @@ public class PedidoController {
         return response;
     }
 
+//    @GetMapping
+//    public List<Pedido.DtoResponse> list(){
+//        return this.service.list().stream().map(
+//                elementoAtual -> {
+//                    Pedido.DtoResponse response = Pedido.DtoResponse.convertToDto(elementoAtual, mapper);
+//                    response.generateLinks(elementoAtual.getId());
+//                    return response;
+//                }).toList();
+//    }
     @GetMapping
-    public List<Pedido.DtoResponse> list(){
-        return this.service.list().stream().map(
-                elementoAtual -> {
-                    Pedido.DtoResponse response = Pedido.DtoResponse.convertToDto(elementoAtual, mapper);
-                    response.generateLinks(elementoAtual.getId());
-                    return response;
-                }).toList();
-    }
+    public ResponseEntity<Page<Pedido.DtoResponse>> find(Pageable page) {
 
+        Page<Pedido.DtoResponse> dtoResponses = service
+                .find(page)
+                .map(record -> {
+                    Pedido.DtoResponse response = Pedido.DtoResponse.convertToDto(record, mapper);
+                    response.generateLinks(record.getId());
+                    return response;
+                });
+
+        return new ResponseEntity<>(dtoResponses, HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public Pedido.DtoResponse getById(@PathVariable Long id){
 

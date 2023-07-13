@@ -45,8 +45,6 @@ public class AlmocoController {
     @GetMapping
     public ResponseEntity<Page<Almoco.DtoResponse>> find(Pageable page) {
 
-        //System.out.println(page.toString());
-
         Page<Almoco.DtoResponse> dtoResponses = service
                 .find(page)
                 .map(record -> {
@@ -54,7 +52,6 @@ public class AlmocoController {
                     response.generateLinks(record.getId());
                     return response;
                 });
-
 
         return new ResponseEntity<>(dtoResponses, HttpStatus.OK);
     }

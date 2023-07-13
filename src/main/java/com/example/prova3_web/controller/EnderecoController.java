@@ -3,7 +3,10 @@ package com.example.prova3_web.controller;
 import com.example.prova3_web.domain.Endereco;
 import com.example.prova3_web.service.EnderecoService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,14 +31,27 @@ public class EnderecoController {
         return response;
     }
 
+//    @GetMapping
+//    public List<Endereco.DtoResponse> list(){
+//        return this.service.list().stream().map(
+//                elementoAtual -> {
+//                    Endereco.DtoResponse response = Endereco.DtoResponse.convertToDto(elementoAtual, mapper);
+//                    response.generateLinks(elementoAtual.getId());
+//                    return response;
+//                }).toList();
+//    }
     @GetMapping
-    public List<Endereco.DtoResponse> list(){
-        return this.service.list().stream().map(
-                elementoAtual -> {
-                    Endereco.DtoResponse response = Endereco.DtoResponse.convertToDto(elementoAtual, mapper);
-                    response.generateLinks(elementoAtual.getId());
+    public ResponseEntity<Page<Endereco.DtoResponse>> find(Pageable page) {
+
+        Page<Endereco.DtoResponse> dtoResponses = service
+                .find(page)
+                .map(record -> {
+                    Endereco.DtoResponse response = Endereco.DtoResponse.convertToDto(record, mapper);
+                    response.generateLinks(record.getId());
                     return response;
-                }).toList();
+                });
+
+        return new ResponseEntity<>(dtoResponses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
