@@ -1,6 +1,10 @@
 package com.example.prova3_web.domain;
 
 import com.example.prova3_web.controller.EnderecoController;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +27,7 @@ public class Endereco extends AbstractEntity{
     private String rua;
     private int numero;
     private String bairro;
+    //1-1
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
@@ -44,6 +49,9 @@ public class Endereco extends AbstractEntity{
         private int numero;
         @NotBlank(message = "Bairro com nome em branco")
         private String bairro;
+        @NotBlank(message = "Usuario com nome em branco")
+        private Usuario usuario;
+
 
         public static Endereco convertToEntity(DtoRequest dto, ModelMapper mapper) {
             return mapper.map(dto, Endereco.class);
@@ -56,6 +64,11 @@ public class Endereco extends AbstractEntity{
         String rua;
         int numero;
         String bairro;
+        @JsonIgnoreProperties({"login", "password", "isAdmin", "endereco", "pedidos", "enabled",
+                "authorities", "credentialsNonExpired", "accountNonExpired", "accountNonLocked",
+                "deletedAt", "createdAt", "updatedAt"})
+        Usuario usuario;
+
 
         public static DtoResponse convertToDto(Endereco e, ModelMapper mapper) {
             return mapper.map(e, DtoResponse.class);
@@ -64,7 +77,7 @@ public class Endereco extends AbstractEntity{
         public void generateLinks(Long id){
             add(linkTo(EnderecoController.class).slash(id).withSelfRel());
             add(linkTo(EnderecoController.class).slash(id).withRel("delete"));
-            add(linkTo(EnderecoController.class).withRel("usuarios"));
+            add(linkTo(EnderecoController.class).withRel("enderecos"));
         }
     }
 }

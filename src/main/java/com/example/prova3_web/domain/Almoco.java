@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @EqualsAndHashCode(callSuper = true)
@@ -71,7 +74,7 @@ public class Almoco extends AbstractEntity{
 
         public void generateLinks(Long id){
             add(linkTo(AlmocoController.class).slash(id).withSelfRel());
-            add(linkTo(AlmocoController.class).withRel("usuarios"));
+            add(linkTo(AlmocoController.class).withRel("almocos"));
             add(linkTo(AlmocoController.class).slash(id).withRel("delete"));
         }
     }

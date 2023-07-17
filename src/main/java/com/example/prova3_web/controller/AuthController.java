@@ -1,6 +1,7 @@
 package com.example.prova3_web.controller;
 
 import com.example.prova3_web.config.LoginDTO;
+import com.example.prova3_web.config.TokenResponse;
 import com.example.prova3_web.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,11 +23,12 @@ public class AuthController {
     }
 
     @PostMapping
-    public String token(@RequestBody @Valid LoginDTO loginDTO) {
+    public TokenResponse token(@RequestBody @Valid LoginDTO loginDTO) {
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.login(), loginDTO.password()));
-        return tokenService.generateToken(authentication);
+
+        return TokenResponse.builder().token(tokenService.generateToken(authentication)).build();
     }
 
 

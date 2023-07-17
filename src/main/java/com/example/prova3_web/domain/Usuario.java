@@ -1,6 +1,7 @@
 package com.example.prova3_web.domain;
 
 import com.example.prova3_web.controller.UsuarioController;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -35,10 +36,14 @@ public class Usuario extends AbstractEntity implements UserDetails {
     private String login;
     private String password;
     private Boolean isAdmin = false;
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+
+    //1-1
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY)
     private Endereco endereco;
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval=true)
-    private List<Pedido> pedidos = new ArrayList<>();;
+
+    //1-N
+    @OneToMany(mappedBy = "usuario", orphanRemoval=true)
+    private List<Pedido> pedidos = new ArrayList<>();
 
     @Override
     public void partialUpdate(AbstractEntity e) {
@@ -90,6 +95,9 @@ public class Usuario extends AbstractEntity implements UserDetails {
         String login;
         @NotBlank(message = "Password com nome em branco")
         String password;
+        Endereco endereco;
+        List<Pedido> pedidos;
+
 
         public static Usuario convertToEntity(DtoRequest dto, ModelMapper mapper) {
             return mapper.map(dto, Usuario.class);
@@ -102,6 +110,10 @@ public class Usuario extends AbstractEntity implements UserDetails {
         String username;
         String login;
         String password;
+        @JsonIgnoreProperties({"numero", "bairro", "usuario", "deletedAt", "createdAt", "updatedAt"})
+        Endereco endereco;
+        @JsonIgnoreProperties({"usuario", "almocos", "deletedAt", "createdAt", "updatedAt"})
+        List<Pedido> pedidos;
 
         public static DtoResponse convertToDto(Usuario u, ModelMapper mapper){
             return mapper.map(u, DtoResponse.class);
@@ -112,5 +124,15 @@ public class Usuario extends AbstractEntity implements UserDetails {
             add(linkTo(UsuarioController.class).withRel("usuarios"));
             add(linkTo(UsuarioController.class).slash(id).withRel("delete"));
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "username='" + username + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", isAdmin=" + isAdmin +
+                '}';
     }
 }

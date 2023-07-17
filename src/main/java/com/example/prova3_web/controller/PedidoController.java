@@ -9,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {
     PedidoService service;
     ModelMapper mapper;
+
     public PedidoController(PedidoService service, ModelMapper mapper){
         this.service = service;
         this.mapper = mapper;
@@ -24,22 +24,13 @@ public class PedidoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Pedido.DtoResponse create(@RequestBody Pedido.DtoRequest p){
-        Pedido pedido = this.service.create(Pedido.DtoRequest.convertToEntity(p, mapper));
+        Pedido pedido = this.service.create(Pedido.DtoRequest.convertToEntity(p, mapper), p.getAlmocos_id(), p.getUsuario_id());
 
         Pedido.DtoResponse response = Pedido.DtoResponse.convertToDto(pedido, mapper);
         response.generateLinks(pedido.getId());
         return response;
     }
 
-//    @GetMapping
-//    public List<Pedido.DtoResponse> list(){
-//        return this.service.list().stream().map(
-//                elementoAtual -> {
-//                    Pedido.DtoResponse response = Pedido.DtoResponse.convertToDto(elementoAtual, mapper);
-//                    response.generateLinks(elementoAtual.getId());
-//                    return response;
-//                }).toList();
-//    }
     @GetMapping
     public ResponseEntity<Page<Pedido.DtoResponse>> find(Pageable page) {
 

@@ -1,7 +1,9 @@
 package com.example.prova3_web.domain;
 
 import com.example.prova3_web.controller.PedidoController;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,16 +31,19 @@ public class Pedido extends AbstractEntity{
     private int quantidade;
     @NotBlank
     private String observacao;
+
+    //1-N
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    //N-N
+    @ManyToMany
     @JoinTable(
             name = "pedido_almoco",
             joinColumns = { @JoinColumn(name = "pedido_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "almoco_id")})
-    private List<Almoco> almocos = new ArrayList<Almoco>();;
+    private List<Almoco> almocos = new ArrayList<Almoco>();
 
     @Override
     public void partialUpdate(AbstractEntity e) {
@@ -54,6 +59,12 @@ public class Pedido extends AbstractEntity{
         String quantidade;
         @NotBlank(message = "Observação com nome em branco")
         String observacao;
+        @NotNull
+        @Min(1)
+        @Max(1)
+        Long usuario_id;
+        @NotNull
+        List<Long> almocos_id;
 
         public static Pedido convertToEntity(DtoRequest dto, ModelMapper mapper){
             return mapper.map(dto, Pedido.class);
@@ -65,7 +76,12 @@ public class Pedido extends AbstractEntity{
     public static class DtoResponse extends RepresentationModel<DtoResponse> {
         String quantidade;
         String observacao;
-
+        @JsonIgnoreProperties({"login", "password", "isAdmin", "endereco", "pedidos", "enabled",
+                "authorities", "credentialsNonExpired", "accountNonExpired", "accountNonLocked",
+                "deletedAt", "createdAt", "updatedAt"})
+        Usuario usuario;
+        @JsonIgnoreProperties({"descricao", "tamanho", "deletedAt", "createdAt", "updatedAt"})
+        List<Almoco> almocos;
 
         public static DtoResponse convertToDto(Pedido p, ModelMapper mapper){
             return mapper.map(p, DtoResponse.class);
@@ -73,7 +89,7 @@ public class Pedido extends AbstractEntity{
 
         public void generateLinks(Long id){
             add(linkTo(PedidoController.class).slash(id).withSelfRel());
-            add(linkTo(PedidoController.class).withRel("pedido"));
+            add(linkTo(PedidoController.class).withRel("pedidos"));
             add(linkTo(PedidoController.class).slash(id).withRel("delete"));
         }
     }

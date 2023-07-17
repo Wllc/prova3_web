@@ -2,6 +2,7 @@ package com.example.prova3_web.errorhandling;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,17 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
+//    @ExceptionHandler({DataIntegrityViolationException.class})
+//    public ResponseEntity<Object> handleDataIntegrityViolationException(
+//            EntityNotFoundException ex, WebRequest request) {
+//
+//        Map<String, Object> body = new LinkedHashMap<>();
+//        body.put("timestamp", LocalDateTime.now());
+//        body.put("message", "Este Login já existe");
+//
+//        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+//    }
+
     @ExceptionHandler({UsernameNotFoundException.class})
     public ResponseEntity<Object> handleUsernameNotFoundException(
             UsernameNotFoundException ex, WebRequest request) {
